@@ -1,244 +1,471 @@
-# Shopping Platform Microservices Architecture
+# 🛒 AI-Powered Shopping Platform
 
-This is a microservices-based implementation of an AI-Powered Shopping Platform, converted from a monolithic Spring Boot application.
+### E-Commerce Platform — Microservices Architecture
 
-## Architecture Overview
+> A full-scale, cloud-native AI-Powered Shopping Platform built using Spring Boot Microservices. Demonstrates distributed systems design, event-driven architecture, AI-powered recommendations, caching, service discovery, centralized configuration, and modern DevOps practices.
+
+<br/>
+
+<img src="https://img.shields.io/badge/Java-17+-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring_Boot-2.7.18-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring_Cloud-2021.0.8-6DB33F?style=for-the-badge&logo=spring&logoColor=white"/>
+<img src="https://img.shields.io/badge/Apache_Kafka-3.x-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"/>
+<img src="https://img.shields.io/badge/MySQL-8-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+<img src="https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
+<img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+<img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge"/>
+
+<br/><br/>
+
+</div>
+
+---
+
+## 📌 Repository Description
+
+> **AI-Powered Shopping Platform** is a microservices-based e-commerce platform built using Java 17, Spring Boot, and Spring Cloud. The system features independent services communicating via REST APIs (synchronous) and Apache Kafka (asynchronous), with full JWT authentication, Redis caching, centralized configuration, service discovery, AI-powered product recommendations, and Docker-based deployment.
+
+---
+
+# 🏗 Architecture Overview
 
 The system consists of the following microservices:
 
-### Infrastructure Services
-- **Eureka Server** (Port 8761) - Service Discovery
-- **Config Server** (Port 8888) - Centralized Configuration
+## Infrastructure Services
 
-### Core Services
-- **API Gateway** (Port 8080) - API Gateway with JWT validation and routing
-- **Auth Service** (Port 8081) - Authentication and Authorization with JWT
-- **User Service** (Port 8082) - User Profile Management
-- **Product Service** (Port 8083) - Product Management with Redis caching
-- **Cart Service** (Port 8084) - Shopping Cart Management
-- **Order Service** (Port 8085) - Order Processing with Kafka Producer
-- **Recommendation Service** (Port 8086) - AI-powered Product Recommendations
-- **Notification Service** (Port 8087) - Notification Management with Kafka Consumer
+| Service | Port | Responsibility |
+|----------|--------|----------------|
+| Eureka Server | 8761 | Service Discovery |
+| Config Server | 8888 | Centralized Configuration |
 
-## Technology Stack
+## Core Services
 
-- **Java**: 17
-- **Spring Boot**: 2.7.18
-- **Spring Cloud**: 2021.0.8
-- **Spring Security**: JWT-based authentication
-- **Spring Data JPA**: Database access
-- **MySQL**: Database per service pattern
-- **Redis**: Caching for Product Service
-- **Apache Kafka**: Event-driven communication
-- **Spring AI**: AI-powered recommendations
-- **Docker**: Containerization
-- **GitHub Actions**: CI/CD
+| Service | Port | Responsibility |
+|----------|--------|----------------|
+| API Gateway | 8080 | API Gateway, JWT Validation & Routing |
+| Auth Service | 8081 | Authentication & Authorization |
+| User Service | 8082 | User Profile Management |
+| Product Service | 8083 | Product Management + Redis Cache |
+| Cart Service | 8084 | Shopping Cart Management |
+| Order Service | 8085 | Order Processing + Kafka Producer |
+| Recommendation Service | 8086 | AI-Powered Recommendations |
+| Notification Service | 8087 | Notification Management + Kafka Consumer |
 
-## Architecture Diagram
+---
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        API Gateway (8080)                       │
-│                   JWT Validation & Routing                    │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-┌───────▼────────┐  ┌────────▼────────┐  ┌──────▼────────┐
-│ Auth Service  │  │  User Service   │  │ Product Svc  │
-│   (8081)      │  │    (8082)       │  │   (8083)      │
-│   + JWT       │  │  + MySQL        │  │  + MySQL      │
-│   + MySQL     │  │                 │  │  + Redis      │
-└───────────────┘  └─────────────────┘  └───────────────┘
-        │                     │                     │
-        └─────────────────────┼─────────────────────┘
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-┌───────▼────────┐  ┌────────▼────────┐  ┌──────▼────────┐
-│ Cart Service   │  │  Order Service  │  │ Recom. Svc   │
-│   (8084)       │  │    (8085)       │  │   (8086)      │
-│   + MySQL      │  │  + MySQL        │  │  + Spring AI  │
-└───────────────┘  │  + Kafka Prod.  │  └───────────────┘
-                   └─────────────────┘
-                              │
-                   ┌──────────▼──────────┐
-                   │ Notification Service │
-                   │      (8087)         │
-                   │  + MySQL            │
-                   │  + Kafka Consumer   │
-                   └─────────────────────┘
+## 🛠 Tech Stack
 
-┌─────────────────────────────────────────────────────────────────┐
-│                        Infrastructure                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐        │
-│  │ Eureka Server│  │ Config Server │  │   Kafka      │        │
-│  │   (8761)     │  │   (8888)      │  │   (9092)     │        │
-│  └──────────────┘  └──────────────┘  └──────────────┘        │
-│  ┌──────────────┐  ┌──────────────┐                         │
-│  │   Redis      │  │  MySQL (x6)   │                         │
-│  │   (6379)     │  │  (3307-3312)  │                         │
-│  └──────────────┘  └──────────────┘                         │
-└─────────────────────────────────────────────────────────────────┘
+<table>
+<tr><td><strong>Core</strong></td><td>Java 17, Spring Boot 2.7.18, Maven</td></tr>
+<tr><td><strong>Cloud</strong></td><td>Spring Cloud 2021.0.8, Eureka, Config Server, Gateway</td></tr>
+<tr><td><strong>Security</strong></td><td>Spring Security, JWT Authentication, RBAC</td></tr>
+<tr><td><strong>Messaging</strong></td><td>Apache Kafka</td></tr>
+<tr><td><strong>Persistence</strong></td><td>Spring Data JPA, Hibernate, MySQL</td></tr>
+<tr><td><strong>Caching</strong></td><td>Redis</td></tr>
+<tr><td><strong>AI</strong></td><td>Spring AI</td></tr>
+<tr><td><strong>Documentation</strong></td><td>Swagger / OpenAPI</td></tr>
+<tr><td><strong>Testing</strong></td><td>JUnit, Mockito</td></tr>
+<tr><td><strong>DevOps</strong></td><td>Docker, Docker Compose, GitHub Actions</td></tr>
+</table>
+
+---
+
+## 🗃 Database Design
+
+Each service owns its own database (Database per Service Pattern):
+
+```text
+auth_db
+└── users
+└── roles
+
+user_db
+└── user_profiles
+
+product_db
+└── products
+└── categories
+
+cart_db
+└── carts
+└── cart_items
+
+order_db
+└── orders
+└── order_items
+
+notification_db
+└── notifications
 ```
 
-## Service Communication
+---
 
-### Synchronous Communication
+## 🌐 Service URLs
+
+| Portal | URL |
+|---------|------|
+| API Gateway | http://localhost:8080 |
+| Eureka Dashboard | http://localhost:8761 |
+| Auth Service | http://localhost:8081 |
+| User Service | http://localhost:8082 |
+| Product Service | http://localhost:8083 |
+| Cart Service | http://localhost:8084 |
+| Order Service | http://localhost:8085 |
+| Recommendation Service | http://localhost:8086 |
+| Notification Service | http://localhost:8087 |
+
+---
+
+# 🔐 Authentication & Authorization
+
+## Roles
+
+| Role | Permissions |
+|--------|-------------|
+| USER | Browse Products, Manage Cart, Place Orders |
+| ADMIN | Full Platform Access |
+
+## Auth Flow
+
+```bash
+# Register User
+POST /api/auth/register
+
+# Login
+POST /api/auth/login
+
+# Admin Login
+POST /api/auth/admin/login
+
+# Logout
+POST /api/auth/logout
+
+# Reset Password
+POST /api/auth/reset-password
+```
+
+JWT tokens are issued by Auth Service and validated by API Gateway.
+
+---
+
+# 🔄 Service Communication
+
+## Synchronous Communication
+
 - API Gateway routes requests to appropriate services
-- Services communicate via REST API (using RestTemplate)
-- All services register with Eureka for service discovery
+- Services communicate via REST APIs using RestTemplate
+- All services register themselves with Eureka
 
-### Asynchronous Communication (Kafka)
-- **Order Service** produces events to Kafka topics:
-  - `order-created` - When a new order is created
-  - `order-cancelled` - When an order is cancelled
-  - `order-delivered` - When an order is delivered
+## Asynchronous Communication (Kafka)
 
-- **Notification Service** consumes events from Kafka topics:
-  - Listens to all order events
-  - Creates notifications for users
-  - Handles retry and error scenarios
+### Order Service publishes events
 
-## Database Schema
+```text
+order-created
+order-cancelled
+order-delivered
+```
 
-Each service has its own database:
-- **auth_db**: User authentication data
-- **user_db**: User profile data
-- **product_db**: Product catalog
-- **cart_db**: Shopping cart data
-- **order_db**: Order management
-- **notification_db**: Notification history
+### Notification Service consumes events
 
-## Security
+```text
+order-created
+order-cancelled
+order-delivered
+```
 
-- JWT-based authentication
-- Role-based access control (USER, ADMIN)
-- API Gateway validates JWT tokens
-- CORS configuration for frontend integration
+Notifications are generated automatically based on order events.
 
-## Getting Started
+---
 
-### Prerequisites
-- Java 17
-- Maven 3.x
-- Docker & Docker Compose
-- MySQL
-- Redis
-- Apache Kafka
+# 📖 API Documentation
 
-### Running with Docker Compose
+## Auth Service
+
+```text
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/admin/login
+POST /api/auth/logout
+POST /api/auth/reset-password
+```
+
+---
+
+## User Service
+
+```text
+GET    /api/users
+GET    /api/users/{id}
+GET    /api/users/email/{email}
+POST   /api/users
+PUT    /api/users/{id}
+DELETE /api/users/{id}
+```
+
+---
+
+## Product Service
+
+```text
+GET    /api/products
+GET    /api/products/{id}
+GET    /api/products/category/{category}
+GET    /api/products/search
+GET    /api/products/price-range
+POST   /api/products
+PUT    /api/products/{id}
+DELETE /api/products/{id}
+```
+
+---
+
+## Cart Service
+
+```text
+GET    /api/carts/user/{userId}
+POST   /api/carts/user/{userId}/add
+PUT    /api/carts/user/{userId}/update
+DELETE /api/carts/user/{userId}/remove
+DELETE /api/carts/user/{userId}/clear
+```
+
+---
+
+## Order Service
+
+```text
+POST   /api/orders
+GET    /api/orders/user/{userEmail}
+GET    /api/orders/{id}
+PUT    /api/orders/{id}/status
+DELETE /api/orders/{id}
+```
+
+---
+
+## Recommendation Service
+
+```text
+GET /api/recommendations?userEmail={email}
+GET /api/recommendations?userEmail={email}&category={category}
+```
+
+---
+
+## Notification Service
+
+```text
+GET    /api/notifications
+GET    /api/notifications/{id}
+GET    /api/notifications/user/{userId}
+PUT    /api/notifications/{id}/read
+DELETE /api/notifications/{id}
+```
+
+---
+
+# 🚀 Running the Project
+
+## Prerequisites
+
+```text
+Java 17
+Maven 3.x
+Docker
+Docker Compose
+MySQL
+Redis
+Apache Kafka
+```
+
+---
+
+## Build All Services
+
+```bash
+mvn clean install
+```
+
+---
+
+## Run Individual Service
+
+```bash
+cd eureka-server
+mvn spring-boot:run
+```
+
+---
+
+## Run Entire Platform
 
 ```bash
 cd microservices
 docker-compose up -d
 ```
 
-This will start all services along with MySQL, Redis, and Kafka.
+---
 
-### Building Individual Services
+# 🧪 Testing
 
 ```bash
-mvn clean install
+# Run all tests
+mvn test
+
+# Generate build artifacts
+mvn clean package
 ```
 
-### Running Individual Services
+---
 
-Each service can be run independently:
-```bash
-cd eureka-server
-mvn spring-boot:run
+# 🏛 Architecture Patterns
+
+| Pattern | Implementation |
+|----------|---------------|
+| Database per Service | Separate database for each microservice |
+| API Gateway | Centralized routing and JWT validation |
+| Service Discovery | Eureka Server |
+| Centralized Configuration | Config Server |
+| Event-Driven Architecture | Kafka |
+| Caching | Redis |
+| Repository Pattern | Spring Data JPA |
+| DTO Pattern | Request/Response DTOs |
+| RBAC | USER / ADMIN roles |
+
+---
+
+# 📊 Infrastructure
+
+```text
+Eureka Server        : 8761
+Config Server        : 8888
+API Gateway          : 8080
+
+Auth Service         : 8081
+User Service         : 8082
+Product Service      : 8083
+Cart Service         : 8084
+Order Service        : 8085
+Recommendation Svc   : 8086
+Notification Service : 8087
+
+Kafka                : 9092
+Redis                : 6379
+
+MySQL Databases
+auth_db
+user_db
+product_db
+cart_db
+order_db
+notification_db
 ```
 
-## API Endpoints
+---
 
-### API Gateway (Port 8080)
-- Routes all requests to appropriate services
-- JWT validation for protected endpoints
+# 🚢 Deployment
 
-### Auth Service (Port 8081)
-- POST `/api/auth/register` - User registration
-- POST `/api/auth/login` - User login
-- POST `/api/auth/admin/login` - Admin login
-- POST `/api/auth/logout` - Logout
-- POST `/api/auth/reset-password` - Password reset
+## Docker Deployment
 
-### User Service (Port 8082)
-- GET `/api/users` - Get all users
-- GET `/api/users/{id}` - Get user by ID
-- GET `/api/users/email/{email}` - Get user by email
-- POST `/api/users` - Create user
-- PUT `/api/users/{id}` - Update user
-- DELETE `/api/users/{id}` - Delete user
-
-### Product Service (Port 8083)
-- GET `/api/products` - Get all products
-- GET `/api/products/{id}` - Get product by ID
-- GET `/api/products/category/{category}` - Get products by category
-- GET `/api/products/search?name={name}` - Search products
-- GET `/api/products/price-range?min={min}&max={max}` - Filter by price
-- POST `/api/products` - Create product
-- PUT `/api/products/{id}` - Update product
-- DELETE `/api/products/{id}` - Delete product
-
-### Cart Service (Port 8084)
-- GET `/api/carts/user/{userId}` - Get user cart
-- POST `/api/carts/user/{userId}/add` - Add item to cart
-- PUT `/api/carts/user/{userId}/update` - Update item quantity
-- DELETE `/api/carts/user/{userId}/remove` - Remove item from cart
-- DELETE `/api/carts/user/{userId}/clear` - Clear cart
-
-### Order Service (Port 8085)
-- POST `/api/orders` - Create order
-- GET `/api/orders/user/{userEmail}` - Get user orders
-- GET `/api/orders/{id}` - Get order by ID
-- PUT `/api/orders/{id}/status` - Update order status
-- DELETE `/api/orders/{id}` - Cancel order
-
-### Recommendation Service (Port 8086)
-- GET `/api/recommendations?userEmail={email}` - Get recommendations
-- GET `/api/recommendations?userEmail={email}&category={cat}` - Get category recommendations
-
-### Notification Service (Port 8087)
-- GET `/api/notifications` - Get all notifications
-- GET `/api/notifications/{id}` - Get notification by ID
-- GET `/api/notifications/user/{userId}` - Get user notifications
-- PUT `/api/notifications/{id}/read` - Mark as read
-- DELETE `/api/notifications/{id}` - Delete notification
-
-## Configuration
-
-All service configurations are managed by the Config Server. Configuration files are located in:
-- `config-server/src/main/resources/config/`
-
-## Deployment
-
-### Docker Deployment
 ```bash
-# Build all services
 mvn clean package
 
-# Run with Docker Compose
 docker-compose up -d
 ```
 
-### CI/CD
-GitHub Actions workflow is configured in `.github/workflows/ci-cd.yml`
+---
 
-## Migration Strategy
+## CI/CD
 
-1. **Phase 1**: Deploy infrastructure services (Eureka, Config Server)
-2. **Phase 2**: Deploy core services (Auth, User, Product)
-3. **Phase 3**: Deploy business services (Cart, Order)
-4. **Phase 4**: Deploy AI and Notification services
-5. **Phase 5**: Switch frontend to use API Gateway
-6. **Phase 6**: Decommission monolithic application
+```text
+GitHub Actions
+```
 
-## Notes
+Workflow file:
+
+```text
+.github/workflows/ci-cd.yml
+```
+
+---
+
+# 🔄 Migration Strategy
+
+### Phase 1
+Deploy Infrastructure Services
+
+```text
+Eureka Server
+Config Server
+```
+
+### Phase 2
+Deploy Core Services
+
+```text
+Auth Service
+User Service
+Product Service
+```
+
+### Phase 3
+Deploy Business Services
+
+```text
+Cart Service
+Order Service
+```
+
+### Phase 4
+Deploy Supporting Services
+
+```text
+Recommendation Service
+Notification Service
+```
+
+### Phase 5
+Switch Frontend Traffic to API Gateway
+
+### Phase 6
+Decommission Monolithic Application
+
+---
+
+# 📝 Notes
 
 - All existing APIs, business logic, and functionality are preserved
 - Role-based access control (USER, ADMIN) is maintained
-- Database per service pattern is implemented
+- Database-per-service pattern is implemented
 - Kafka communication is strictly asynchronous between Order and Notification services
 - Redis caching is implemented in Product Service
 - Spring AI is used for product recommendations
+- API Gateway performs JWT validation and request routing
+
+---
+
+# 🤝 Contributing
+
+```bash
+# Fork repository
+
+# Create branch
+git checkout -b feature/your-feature
+
+# Commit changes
+git commit -m "feat: add your feature"
+
+# Push changes
+git push origin feature/your-feature
+
+# Create Pull Request
+```
+
+---
+
+## 📄 License
+
+```text
+MIT License
+```
