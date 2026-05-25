@@ -1,0 +1,97 @@
+package com.springboot.product.controller;
+
+import com.springboot.product.entity.Product;
+import com.springboot.product.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/products")
+@CrossOrigin(origins = "*")
+public class ProductController {
+    
+    @Autowired
+    private ProductService productService;
+    
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
+    
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable String category) {
+        return ResponseEntity.ok(productService.getProductsByCategory(category));
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam String name) {
+        return ResponseEntity.ok(productService.searchProducts(name));
+    }
+    
+    @GetMapping("/price-range")
+    public ResponseEntity<List<Product>> getProductsByPriceRange(
+            @RequestParam BigDecimal minPrice,
+            @RequestParam BigDecimal maxPrice) {
+        return ResponseEntity.ok(productService.getProductsByPriceRange(minPrice, maxPrice));
+    }
+    
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
+        return ResponseEntity.ok(productService.createProduct(product));
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) {
+        product.setId(id);
+        return ResponseEntity.ok(productService.updateProduct(product));
+    }
+    
+    @PostMapping("/create-product-4")
+    public ResponseEntity<Product> createProduct4() {
+        Product product = new Product();
+        product.setName("Classic White Shirt");
+        product.setDescription("Classic white shirt for formal occasions");
+        product.setPrice(new BigDecimal("738.00"));
+        product.setStockQuantity(50);
+        product.setImageUrl("f3.jpg");
+        product.setCategory("Shirts");
+        
+        Product savedProduct = productService.createProduct(product);
+        return ResponseEntity.ok(savedProduct);
+    }
+    
+    @PostMapping("/force-create-product-4")
+    public ResponseEntity<String> forceCreateProduct4() {
+        try {
+            Product product = new Product();
+            product.setId(4L);
+            product.setName("Classic White Shirt");
+            product.setDescription("Classic white shirt for formal occasions");
+            product.setPrice(new BigDecimal("738.00"));
+            product.setStockQuantity(50);
+            product.setImageUrl("f3.jpg");
+            product.setCategory("Shirts");
+            
+            Product savedProduct = productService.saveProductWithId(product);
+            return ResponseEntity.ok("Product ID 4 created successfully: " + savedProduct.getId());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error creating product ID 4: " + e.getMessage());
+        }
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
+    }
+}

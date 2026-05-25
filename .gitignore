@@ -1,0 +1,21 @@
+# IDE files
+.idea/
+.vscode/
+
+# Logs
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# Build / archives
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Eclipse/Project files
+.project
+
+# SQL cleanup scripts (if not needed in repo)
+*_cleanup.sql
