@@ -122,21 +122,6 @@ Each service owns its own MySQL schema (database-per-service pattern):
 
 ---
 
-## 🗃 Database Design
-
-Each service owns its own MySQL database (Database-per-Service Pattern):
-
-```text
-auth_db
-user_db
-product_db
-cart_db
-order_db
-notification_db
-```
-
----
-
 ## 🌐 Service URLs
 
 | Portal | URL |
