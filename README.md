@@ -64,6 +64,34 @@
 
 ---
 
+## 🗃 Database Design
+
+Each service owns its own MySQL schema (database-per-service pattern):
+
+```text
+ auth_db
+ └── users              (id, first_name, last_name, email, password, role)
+ └── refresh_tokens     (id, token, user_id, expiry_date)
+
+ user_db
+ └── user_profiles      (id, user_id, first_name, last_name, email, phone, address)
+
+ product_db
+ └── categories         (id, name, description)
+ └── products           (id, name, description, price, stock_quantity, category_id)
+
+ cart_db
+ └── carts              (id, user_id, total_amount)
+ └── cart_items         (id, cart_id, product_id, quantity, price)
+
+ order_db
+ └── orders             (id, user_id, total_amount, status, order_date)
+ └── order_items        (id, order_id, product_id, quantity, price)
+
+ notification_db
+ └── notifications      (id, user_id, title, message, status, created_at)
+```
+
 ## 🏗 Architecture Overview
 
 ```text
