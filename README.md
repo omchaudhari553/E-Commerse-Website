@@ -27,7 +27,7 @@
 
 ## 📌 Repository Description
 
-> **AI-Powered Shopping Platform** is a microservices-based e-commerce platform built using **Java 17**, **Spring Boot 3.3x**, and **Spring Cloud 2021.0.8**. The system features independent services communicating via **REST APIs** (synchronous) and **Apache Kafka** (asynchronous), with full **JWT authentication**, **Redis caching**, **centralized configuration**, **service discovery**, **AI-powered product recommendations**, and **Docker-based deployment**.
+> **AI-Powered Shopping Platform** is a microservices-based e-commerce platform built using **Java 17**, **Spring Boot 3.3.x**, and **Spring Cloud 2021.0.8**. The system features independent services communicating via **REST APIs** (synchronous) and **Apache Kafka** (asynchronous), with full **JWT authentication**, **Redis caching**, **centralized configuration**, **service discovery**, **AI-powered product recommendations**, and **Docker-based deployment**.
 
 ---
 
@@ -51,7 +51,7 @@
 ## 🛠 Tech Stack
 
 <table>
-<tr><td><strong>Core</strong></td><td>Java 17, Spring Boot 3.3x, Maven</td></tr>
+<tr><td><strong>Core</strong></td><td>Java 17, Spring Boot 3.3.x, Maven</td></tr>
 <tr><td><strong>Cloud</strong></td><td>Spring Cloud 2021.0.8, Eureka, Config Server, Gateway</td></tr>
 <tr><td><strong>Security</strong></td><td>Spring Security, JWT Authentication, RBAC (USER / ADMIN)</td></tr>
 <tr><td><strong>Messaging</strong></td><td>Apache Kafka (Async Communication)</td></tr>
